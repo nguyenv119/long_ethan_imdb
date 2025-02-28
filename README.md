@@ -1,4 +1,12 @@
-# Create Your Own IMDb
+# PA1.1: Long Nguyen & Ethan Kondev
+
+### For Ethan: run this after you've set up your DB instance
+```python
+mysql -u imdb -p moviedb < schema.sql
+mysql -u imdb -p moviedb < ./data/data.sql
+```
+
+You should see the app run on localhost
 
 ## Overview
 This project is a simple web application similar to IMDb that interacts with a MySQL/MariaDB database. The application features a Flask-based UI that allows users to **view movie and actor details, like movies, and execute SQL queries**.
