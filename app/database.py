@@ -3,7 +3,6 @@ from typing import Any, AnyStr, Optional, Tuple
 import pymysql as sqldb
 import app.config as config
 
-
 def get_db_connection() -> sqldb.Connection:
     """Establish and return a database connection."""
     return sqldb.connect(
@@ -12,7 +11,6 @@ def get_db_connection() -> sqldb.Connection:
         host=config.DB_HOST,
         database=config.DB_DATABASE,
     )
-
 
 class Database:
     """Context manager class for managing database connections."""
