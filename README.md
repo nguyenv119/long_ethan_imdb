@@ -1,20 +1,7 @@
 # PA1.1: Long Nguyen & Ethan Kondev
 
-## Tasks for Ethan: Error Handling
-
-1. Run this after you've set up your DB instance
-```python
-mysql -u imdb -p moviedb < schema.sql
-mysql -u imdb -p moviedb < ./data/data.sql
-```
-You should see the app run on localhost
-
-2. Instead of displaying an error when a user has already liked a movie (likes table has composite primary key), we should say **"you have already liked the movie"**, or something.
-
-3. If the email is not in the DB, we need to say that the **"Email is not registered"**
-
-This is all in 'long_ethan_imdb/app/routes/movies.py'
-
+## Note:
+We didn't commit the ini.env file, since you usually don't. The project will run with the tester' own configurations and DB setup.
 
 ## Overview
 This project is a simple web application similar to IMDb that interacts with a MySQL/MariaDB database. The application features a Flask-based UI that allows users to **view movie and actor details, like movies, and execute SQL queries**.
