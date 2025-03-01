@@ -43,15 +43,27 @@ def like_movie():
     #    - Why we pass `params` as a tuple (movie_id, user_email).
     #    - The role of `commit=True` in saving changes.
 
-    query = """INSERT INTO Likes (mpid, uemail) VALUES (%s, %s);"""
+    user_check_query = """SELECT * FROM Users WHERE email = %s;"""
+    like_check_query = """SELECT * FROM Likes where mpid = %s AND uemail = %s;"""
+    insert_query = """INSERT INTO Likes (mpid, uemail) VALUES (%s, %s);"""
 
     with Database() as db:
 
-        # Ethan: Check if we have already liked a movie here
-        # Ethan: Check if user is a valid user here
+
+        # Check if user is a valid user here
+        user = db.execute(user_check_query, (user_email,), fetch_one=True)
+        if not user:
+            message = f"Email '{user_email}' is not registered!"
+            return render_template("liked_movie.html", message=message)
+       
+        # Check if we have already liked a movie here
+        existing_like = db.execute(like_check_query, (movie_id, user_email), fetch_one=True)
+        if existing_like:
+            message = "You have already liked this movie!"
+            return render_template("liked_movie.html", message=message)
 
         try:
-            db.execute(query, (movie_id, user_email), commit=True)
+            db.execute(insert_query, (movie_id, user_email), commit=True)
             message = "You have successfully liked the movie!"
         except Exception as e:
             message = f"An error occurred: {str(e)}"
