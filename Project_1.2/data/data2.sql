@@ -12,7 +12,7 @@ INSERT INTO MotionPicture (id, NAME, rating, production, budget) VALUES
 (106, 'Fullmetal Alchemist: Brotherhood', 7.9, 'Bones', 5500000),
 (107, 'Ted Lasso', 6.9, 'Universal Television', 120000000),
 (108, 'Fleabag', 8, 'Two Brothers Pictures', 20000000),
-(109, 'The Simpsons', 8.1, 'Gracie Films', 3650000000),
+(109, 'The Simpsons', 8.1, 'Gracie Films', 365000000),
 (110, 'Sacred Games', 7.1, 'Netflix', 18000000),
 (111, 'Agents of Shield', 6, 'Marvel', 200000000),
 (205, 'Batman: The dark knight', 8, 'Warner Bros', 150000000),
