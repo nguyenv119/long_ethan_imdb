@@ -1,10 +1,11 @@
+-- SQLBook: Code
 -- Create MotionPicture Table
 CREATE TABLE MotionPicture (
     id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     rating FLOAT CHECK (rating >= 0 AND rating <= 10),
     production VARCHAR(255),
-    budget INT CHECK (budget > 0)
+    budget BIGINT CHECK (budget > 0)
 );
 
 -- Create Users Table
