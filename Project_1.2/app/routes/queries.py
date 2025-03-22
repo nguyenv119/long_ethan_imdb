@@ -10,7 +10,7 @@ def list_tables():
 
     # >>>> TODO 1: Write a query to list all the tables in the database. <<<<
 
-    query = """ """
+    query = """ SHOW TABLES """
 
     with Database() as db:
         tables = db.execute(query)
@@ -44,7 +44,12 @@ def search_liked_movies():
     # >>>> TODO 3: Find the movies that have been liked by a specific user’s email. <<<<
     #              List the movie `name`, `rating`, `production` and `budget`.
 
-    query = """ """
+    query = """
+        SELECT mp.name, mp.rating, mp.production, mp.budget
+        FROM Likes l
+        JOIN MotionPicture mp ON l.mpid = mp.id
+        WHERE l.uemail = %s;
+    """
 
     with Database() as db:
         movies = db.execute(query, (user_email,))
@@ -78,7 +83,16 @@ def search_directors_by_zip():
     # >>>> TODO 5: List all directors who have directed TV series shot in a specific zip code. <<<<
     #              List the director name and TV series name only without duplicates.
 
-    query = """ """
+    query = """
+        SELECT DISTINCT p.name, mp.name
+        FROM Role r
+        JOIN People p ON r.pid = p.id
+        JOIN MotionPicture mp ON r.mpid = mp.id
+        JOIN Series s ON mp.id = s.mpid
+        JOIN Location l ON mp.id = l.mpid
+        WHERE r.role_name = 'Director'
+        AND l.zip = %s;
+    """
 
     with Database() as db:
         results = db.execute(query, (zip_code,))
@@ -117,7 +131,13 @@ def find_youngest_oldest_actors():
     #              The age should be computed from the person’s date of birth to the award winning year only. 
     #              In case of a tie, list all of them.
 
-    query = """ """
+    query = """
+        SELECT DISTINCT p.name, (a.award_year - YEAR(p.dob)) AS age
+        FROM Award a
+        JOIN People p ON a.pid = p.id
+        WHERE p.dob IS NOT NULL
+        AND p.id IN (SELECT pid FROM Role WHERE role_name = 'Actor');
+    """
 
     with Database() as db:
         actors = db.execute(query)
@@ -176,7 +196,15 @@ def search_multiple_roles():
     # >>>> TODO 9: List the people who have played multiple roles in a motion picture where the rating is more than “X”. <<<<
     #              List the person’s `name`, `motion picture name` and `count of number of roles` for that particular motion picture.
 
-    query = """ """
+    query = """
+        SELECT p.name, mp.name, COUNT(r.role_name) AS role_count
+        FROM Role r
+        JOIN People p ON r.pid = p.id
+        JOIN MotionPicture mp ON r.mpid = mp.id
+        WHERE mp.rating > %s
+        GROUP BY r.mpid, r.pid, mp.name, p.name
+        HAVING COUNT(r.role_name) > 1;
+    """
 
     with Database() as db:
         results = db.execute(query, (rating_threshold,))
@@ -221,7 +249,15 @@ def search_movies_by_likes():
     # >>>> TODO 11: Find all the movies with more than “X” likes by users of age less than “Y”. <<<<
     #               List the movie names and the number of likes by those age-group users.
 
-    query = """ """
+    query = """
+        SELECT mp.name, COUNT(*) AS like_count
+        FROM Likes l
+        JOIN Users u ON l.uemail = u.email
+        JOIN MotionPicture mp ON l.mpid = mp.id
+        WHERE u.age < %s
+        GROUP BY mp.id, mp.name
+        HAVING COUNT(*) > %s;
+    """
 
     with Database() as db:
         results = db.execute(query, (max_age, min_likes))
@@ -267,7 +303,17 @@ def movies_higher_than_comedy_avg():
     # >>>> TODO 13: Find the motion pictures that have a higher rating than the average rating of all comedy (genre) motion pictures. <<<<
     #               Show the names and ratings in descending order of ratings.
 
-    query = """ """
+    query = """
+        SELECT mp.name, mp.rating
+        FROM MotionPicture mp
+        WHERE mp.rating > (
+            SELECT AVG(mp2.rating)
+            FROM MotionPicture mp2
+            JOIN Genre g ON mp2.id = g.mpid
+            WHERE g.genre_name = 'Comedy'
+        )
+        ORDER BY mp.rating DESC;
+    """
 
     with Database() as db:
         results = db.execute(query)
@@ -306,7 +352,13 @@ def actors_with_common_birthday():
     # >>>> TODO 15: Find actors who share the same birthday. <<<<
     #               List the actor names (actor 1, actor 2) and their common birthday.
 
-    query = """ """
+    query = """
+        SELECT p1.name, p2.name, p1.dob
+        FROM People p1
+        JOIN People p2 ON p1.dob = p2.dob AND p1.id < p2.id
+        WHERE p1.id IN (SELECT pid FROM Role WHERE role_name = 'Actor')
+        AND p2.id IN (SELECT pid FROM Role WHERE role_name = 'Actor');
+    """ 
 
     with Database() as db:
         results = db.execute(query)
